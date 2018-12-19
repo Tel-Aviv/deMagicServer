@@ -9,7 +9,7 @@ const listItems = [];
 //get all face list and save it locally
 fetch(`${baseUrl}largefacelists/${config.largeFaceListId}/persistedfaces?start=0&top=1000`, {
         method: 'GET',
-        agent: new proxyAgent(config.proxyUrl),
+     //   agent: new proxyAgent(config.proxyUrl),
         headers: {
           'Ocp-Apim-Subscription-Key': config.subscriptionKey
         }
@@ -46,7 +46,7 @@ app.post('/face/detect', (req, res) => {
    {
      fetch(`${baseUrl}detect?returnFaceId=true&returnFaceLandmarks=false`, {
         method: 'POST',
-        agent: new proxyAgent(config.proxyUrl),
+      //  agent: new proxyAgent(config.proxyUrl),
         headers: {
           'Ocp-Apim-Subscription-Key': config.subscriptionKey,
           'Content-Type': 'application/octet-stream'
@@ -70,7 +70,7 @@ app.post('/face/detect', (req, res) => {
 
            fetch(`${baseUrl}findsimilars`, {
             method: 'POST',
-            agent: new proxyAgent(config.proxyUrl),
+        //    agent: new proxyAgent(config.proxyUrl),
             headers: {
               'Ocp-Apim-Subscription-Key': config.subscriptionKey,
               'Content-Type': 'application/json'
@@ -100,7 +100,7 @@ app.post('/face/detect', (req, res) => {
 
                 fetch(config.actionerUrl, {
                  method: 'POST',
-                 agent: new proxyAgent(config.proxyUrl),
+               //  agent: new proxyAgent(config.proxyUrl),
                  headers: {
                 //   'Ocp-Apim-Subscription-Key': config.smsSubKey,
                    'Authorization': 'Basic OTkyZDU1MjgtOGM3Zi00ODBmLThjNzktZWFjYmY3YTJhZTMyOjAyYWFlMTllLWFmYzQtNDNhMi1hZDY1LTFkMWI0NjBiOGIwMQ==',
