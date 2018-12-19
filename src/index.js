@@ -9,7 +9,7 @@ const listItems = [];
 //get all face list and save it locally
 fetch(`${baseUrl}largefacelists/${config.largeFaceListId}/persistedfaces?start=0&top=1000`, {
         method: 'GET',
-     //  agent: new proxyAgent(config.proxyUrl),
+        agent: new proxyAgent(config.proxyUrl),
         headers: {
           'Ocp-Apim-Subscription-Key': config.subscriptionKey
         }
@@ -22,7 +22,8 @@ fetch(`${baseUrl}largefacelists/${config.largeFaceListId}/persistedfaces?start=0
           id: item.persistedFaceId,
           url: userData.url,
           phoneNumber: userData.phoneNumber,
-          name: userData.name
+          name: userData.name,
+          sent: false
         });
       });
     })
@@ -41,9 +42,11 @@ app.get('/', (req,res)=>{
 });
 
 app.post('/face/detect', (req, res) => {
+  if (req.headers["access-key"] && req.headers["access-key"] == 'conf2018')
+   {
      fetch(`${baseUrl}detect?returnFaceId=true&returnFaceLandmarks=false`, {
         method: 'POST',
-      //  agent: new proxyAgent(config.proxyUrl),
+        agent: new proxyAgent(config.proxyUrl),
         headers: {
           'Ocp-Apim-Subscription-Key': config.subscriptionKey,
           'Content-Type': 'application/octet-stream'
@@ -67,7 +70,7 @@ app.post('/face/detect', (req, res) => {
 
            fetch(`${baseUrl}findsimilars`, {
             method: 'POST',
-            //agent: new proxyAgent(config.proxyUrl),
+            agent: new proxyAgent(config.proxyUrl),
             headers: {
               'Ocp-Apim-Subscription-Key': config.subscriptionKey,
               'Content-Type': 'application/json'
@@ -84,21 +87,49 @@ app.post('/face/detect', (req, res) => {
           }})
           .then( foundJson => {
 
-             body = {
-               person: foundJson
-             };
+              if ( foundJson && !foundJson.sent)
+              {
+                body =
+                {
+                  // sendSms: {
+                  //     userName: 'telavivmoked;telavivmoked',
+                  //     password: 'Vfk490ytk',
+                  //     message: `${foundJson.name} שלום, הנה כרטיס הכניסה שלך לכנס אגף המיחשוב 2018: ${config.ticketUrl}${foundJson.id}`,
+                  //     recipients: '+972546592374',
+                  //     senderName: 'Tlv Conf',
+                  //     senderNumber: '106'
+                  //   }
+                  source: "Tlv Conf",
+                  destination: [
+                        "+972546592374"
+                  ],
+                  text:`${foundJson.name} שלום, הנה כרטיס הכניסה שלך לכנס אגף המיחשוב 2018: ${config.ticketUrl}${foundJson.id}`,
+                };
 
-             fetch(config.actionerUrl, {
-               method: 'POST',
-             //  agent: new proxyAgent(config.proxyUrl),
-               headers: {
-                 'Content-Type': 'application/json'
-               },
-               body: JSON.stringify(body)
-             })
-             .then( resp => {
-               console.log('actioner for ' + foundJson.name + ' succeeded');
-             })
+                fetch(config.actionerUrl, {
+                 method: 'POST',
+                 agent: new proxyAgent(config.proxyUrl),
+                 headers: {
+                //   'Ocp-Apim-Subscription-Key': config.smsSubKey,
+                   'Authorization': 'Basic OTkyZDU1MjgtOGM3Zi00ODBmLThjNzktZWFjYmY3YTJhZTMyOjAyYWFlMTllLWFmYzQtNDNhMi1hZDY1LTFkMWI0NjBiOGIwMQ==',
+                   'Content-Type': 'application/json'
+                 },
+                 body: JSON.stringify(body)
+               })
+               .then(resp => {
+                 const found = listItems.find( item => {
+                          return  item.id == foundJson.id
+                        });
+                 if (found)
+                 {
+                    found.sent = true;
+                    console.log('sent');
+                  }
+               })
+               .catch((err)=>{
+                 console.error(err);
+               });
+             }
           })
           .catch((err)=>{
             console.error(err);
@@ -110,10 +141,7 @@ app.post('/face/detect', (req, res) => {
     }
   }
 
-  res.status(200).send({
-    success: 'true',
-    message: 'message accepted successfully'
-  })
+  res.status(202).send()
 }).catch((err)=>{
   console.error(err);
   res.status(400).send({
@@ -121,6 +149,13 @@ app.post('/face/detect', (req, res) => {
     message: err.message
   });
 });
+}
+else {
+  res.status(403).send({
+    success: 'false',
+    message: 'no access key was supplied'
+  });
+}
 });
 
 const PORT = process.env.PORT || config.port;

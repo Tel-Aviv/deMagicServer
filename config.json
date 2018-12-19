@@ -3,6 +3,8 @@
   "proxyUrl": "http://forticache:8080",
   "largeFaceListId": "10",
   "subscriptionKey": "91c9316d38044714b15eb630c1b6738a",
-  "port": "1000",
-  "actionerUrl": "http://bla.com"
+  "smsSubKey": "2eb7e577226c47a98f7f8574a2becbbe",
+  "port": "4567",
+  "actionerUrl": "https://api.karix.io/message",
+  "ticketUrl": "http://www.google.com/faceid="
 }
