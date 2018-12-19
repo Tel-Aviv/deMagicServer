@@ -1,0 +1,15 @@
+{
+  "name": "detectFace",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "debug": "node --inspect-brk ./src/index.js",
+    "start": "node ./src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.16.4",
+    "https-proxy-agent": "^2.2.1",
+    "node-fetch": "^2.3.0"
+  }
+}

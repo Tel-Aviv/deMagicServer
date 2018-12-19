@@ -1,0 +1,8 @@
+{
+  "congnitiveUrl": "https://northeurope.api.cognitive.microsoft.com/face/v1.0/",
+  "proxyUrl": "http://forticache:8080",
+  "largeFaceListId": "10",
+  "subscriptionKey": "91c9316d38044714b15eb630c1b6738a",
+  "port": "1000",
+  "actionerUrl": "http://bla.com"
+}
