@@ -91,14 +91,6 @@ app.post('/face/detect', (req, res) => {
               {
                 body =
                 {
-                  // sendSms: {
-                  //     userName: 'telavivmoked;telavivmoked',
-                  //     password: 'Vfk490ytk',
-                  //     message: `${foundJson.name} שלום, הנה כרטיס הכניסה שלך לכנס אגף המיחשוב 2018: ${config.ticketUrl}${foundJson.id}`,
-                  //     recipients: '+972546592374',
-                  //     senderName: 'Tlv Conf',
-                  //     senderNumber: '106'
-                  //   }
                   source: "Tlv Conf",
                   destination: [
                         "+972546592374"
