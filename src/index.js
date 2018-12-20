@@ -105,19 +105,28 @@ app.post("/face/detect", (req, res) => {
               "request: " + requestId,
               `Returned from similarity with ${json.length} items`);
 
-              if (json && json.length > 0 
-                  && (json[0].confidence > config.confidence) ) {
-                  
+              if (json && json.length > 0 ) {
+                  if (json[0].confidence > config.confidence) {
+                    
+                    console.timeLog(
+                      "request: " + requestId,
+                      "Found similar face with " + json[0].confidence + " confidence"
+                    );
+
+                    return listItems.find(item => {
+                      return item.id == json[0].persistedFaceId;
+
+                    });
+                  } else {
+                    console.timeLog(
+                      "request: " + requestId,
+                      `Found with low confidence: ${json[0].confidence}`);
+                      return null;
+                  }
+              } else {
                   console.timeLog(
                     "request: " + requestId,
-                    "Found similar face with " + json[0].confidence + " confidence"
-                  );
-
-                  return listItems.find(item => {
-                    return item.id == json[0].persistedFaceId;
-
-                  });
-              } else {
+                    `Similar face not found`);
                 return null;
               }
 
