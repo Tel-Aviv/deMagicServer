@@ -1,10 +1,10 @@
 {
   "congnitiveUrl": "https://northeurope.api.cognitive.microsoft.com/face/v1.0/",
   "proxyUrl": "http://forticache:8080",
-  "largeFaceListId": "11",
+  "largeFaceListId": "10",
   "subscriptionKey": "91c9316d38044714b15eb630c1b6738a",
   "smsSubKey": "2eb7e577226c47a98f7f8574a2becbbe",
   "port": "4567",
   "actionerUrl": "https://api.karix.io/message",
-  "ticketUrl": "http://www.google.com/faceid="
+  "ticketUrl": "https://demagicticket.azurewebsites.net/dist/index.html?faceid="
 }
