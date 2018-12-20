@@ -29,6 +29,7 @@ fetch(
         //  url: userData.url,
         phoneNumber: userData.phoneNumber,
         name: userData.firstName,
+        tid: userData.tid,
         sent: false
       });
     });
@@ -54,9 +55,9 @@ app.post("/face/detect", (req, res) => {
       message: "no access key was supplied"
     });
   }
-  let localCounter = ++counter;
-  console.time("request: " + localCounter);
-  console.timeLog("request: " + localCounter, "request recived");
+  let requsetId = ++counter;
+  console.time("request: " + requsetId);
+  console.timeLog("request: " + requsetId, "request recived");
 
   fetch(`${baseUrl}detect?returnFaceId=true&returnFaceLandmarks=false`, {
     method: "POST",
@@ -71,7 +72,7 @@ app.post("/face/detect", (req, res) => {
     .then(faces => {
       if (faces.length > 0) {
         console.timeLog(
-          "request: " + localCounter,
+          "request: " + requsetId,
           "Detect " + faces.length + " faces"
         );
         for (var i in faces) {
@@ -98,8 +99,8 @@ app.post("/face/detect", (req, res) => {
               if (json && json.length > 0) {
                 if (json[0].confidence > config.confidence) {
                   console.timeLog(
-                    "request: " + localCounter,
-                    "Found simlar face in " + config.confidence + " confidence"
+                    "request: " + requsetId,
+                    "Found simlar face in " + json[0].confidence + " confidence"
                   );
                   return listItems.find(item => {
                     return item.id == json[0].persistedFaceId;
@@ -110,7 +111,7 @@ app.post("/face/detect", (req, res) => {
             .then(foundJson => {
               if (foundJson && !foundJson.sent) {
                 console.timeLog(
-                  "request: " + localCounter,
+                  "request: " + requsetId,
                   "Found user: " + foundJson.tid
                 );
                 body = {
@@ -141,11 +142,11 @@ app.post("/face/detect", (req, res) => {
                     if (found) {
                       found.sent = true;
                       console.timeLog(
-                        "request: " + localCounter,
+                        "request: " + requsetId,
                         "sms sent to: " + foundJson.phoneNumber
                       );
                     }
-                    console.timeEnd("request: " + localCounter);
+                    console.timeEnd("request: " + requsetId);
                   })
                   .catch(err => {
                     console.error(err);
@@ -166,7 +167,7 @@ app.post("/face/detect", (req, res) => {
     })
     .catch(err => {
       console.error(err);
-      console.timeEnd("request: " + localCounter);
+      console.timeEnd("request: " + requsetId);
       res.status(400).send({
         success: "false",
         message: err.message
