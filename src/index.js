@@ -2,7 +2,7 @@ var fetch = require("node-fetch");
 var express = require("express");
 var proxyAgent = require("https-proxy-agent");
 var config = require("./../config.json");
-var casual = require('casual');
+var casual = require("casual");
 
 const baseUrl = config.congnitiveUrl;
 const listItems = [];
@@ -42,16 +42,15 @@ fetch(
 // express rest api
 const app = express();
 
-
 app.post("/test", (req, res) => {
-  let  body = {
+  let body = {
     source: "Tlv Conf",
     destination: ["+972543307026"],
     text: `${casual.word} `
   };
   fetch(config.actionerUrl, {
     method: "POST",
-    agent: new proxyAgent(config.proxyUrl),
+    //agent: new proxyAgent(config.proxyUrl),
     headers: {
       //   'Ocp-Apim-Subscription-Key': config.smsSubKey,
       Authorization:
@@ -59,9 +58,9 @@ app.post("/test", (req, res) => {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(body)
-  }).then((resp)=>{
+  }).then(resp => {
     res.send(200, resp);
-  })
+  });
 });
 
 app.post("/face/detect", (req, res) => {
@@ -92,13 +91,13 @@ app.post("/face/detect", (req, res) => {
       );
 
       if (faces.length > 0) {
-
         for (var i in faces) {
           const faceId = faces[i].faceId;
 
           console.timeLog(
             "request: " + requestId,
-            `Trying similariry for ${faceId}`);
+            `Trying similariry for ${faceId}`
+          );
 
           body = {
             faceId: faceId,
@@ -116,59 +115,63 @@ app.post("/face/detect", (req, res) => {
             },
             body: JSON.stringify(body)
           })
-          .then(resp => resp.json())
-          .then(json => {
+            .then(resp => resp.json())
+            .then(json => {
+              console.timeLog(
+                "request: " + requestId,
+                `Returned from similarity with ${json.length} items`
+              );
 
-            console.timeLog(
-              "request: " + requestId,
-              `Returned from similarity with ${json.length} items`);
-
-              if (json && json.length > 0 ) {
-                  if (json[0].confidence > config.confidence) {
-                    
-                    console.timeLog(
-                      "request: " + requestId,
-                      "Found similar face with " + json[0].confidence + " confidence"
-                    );
-
-                    return listItems.find(item => {
-                      return item.id == json[0].persistedFaceId;
-
-                    });
-                  } else {
-                    console.timeLog(
-                      "request: " + requestId,
-                      `Found with low confidence: ${json[0].confidence}`);
-                      return null;
-                  }
-              } else {
+              if (json && json.length > 0) {
+                if (json[0].confidence > config.confidence) {
                   console.timeLog(
                     "request: " + requestId,
-                    `Similar face not found`);
+                    "Found similar face with " +
+                      json[0].confidence +
+                      " confidence"
+                  );
+
+                  return listItems.find(item => {
+                    return item.id == json[0].persistedFaceId;
+                  });
+                } else {
+                  console.timeLog(
+                    "request: " + requestId,
+                    `Found with low confidence: ${json[0].confidence}`
+                  );
+                  return null;
+                }
+              } else {
+                console.timeLog(
+                  "request: " + requestId,
+                  `Similar face not found`
+                );
                 return null;
               }
-
-
             })
-          .then(foundJson => {
-            if (foundJson) {
+            .then(foundJson => {
+              if (foundJson) {
                 console.timeLog(
                   "request: " + requestId,
                   "Found user: " + foundJson.tid
                 );
 
-                if( foundJson.sent ) {
+                if (foundJson.sent) {
                   console.timeLog(
                     "request: " + requestId,
                     `SMS is already sent to ${foundJson.phoneNumber}`
                   );
-                  return;  
+                  return;
                 }
 
                 body = {
                   source: "Tlv Conf",
                   destination: ["+972546592374"],
-                  text: `${foundJson.name } שלום, הנה כרטיס הכניסה שלך לכנס אגף המחשוב 2018: ${config.ticketUrl}${foundJson.id}&sid=${casual.letter}`
+                  text: `${
+                    foundJson.name
+                  } שלום, הנה כרטיס הכניסה שלך לכנס אגף המחשוב 2018: ${
+                    config.ticketUrl
+                  }${foundJson.id}&sid=${casual.letter}`
                 };
 
                 fetch(config.actionerUrl, {
@@ -176,9 +179,8 @@ app.post("/face/detect", (req, res) => {
                   //agent: new proxyAgent(config.proxyUrl),
                   headers: {
                     //   'Ocp-Apim-Subscription-Key': config.smsSubKey,
-                    Authorization:
-                      "Basic OTkyZDU1MjgtOGM3Zi00ODBmLThjNzktZWFjYmY3YTJhZTMyOjAyYWFlMTllLWFmYzQtNDNhMi1hZDY1LTFkMWI0NjBiOGIwMQ==",
-                    "Content-Type": "application/json"
+                    Authorization: "Basic OTkyZDU1MjgtOGM3Zi00ODBmLThjNzktZWFjYmY3YTJhZTMyOjAyYWFlMTllLWFmYzQtNDNhMi1hZDY1LTFkMWI0NjBiOGIwMQ==",
+                      "Content-Type": "application/json"
                   },
                   body: JSON.stringify(body)
                 })
@@ -201,7 +203,7 @@ app.post("/face/detect", (req, res) => {
               }
             })
             .catch(err => {
-              console.error(err);      
+              console.error(err);
             });
         }
       }
