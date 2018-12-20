@@ -70,11 +70,13 @@ app.post("/face/detect", (req, res) => {
   })
     .then(resp => resp.json())
     .then(faces => {
+      console.timeLog(
+        "request: " + requestId,
+        "Detect " + faces.length + " face(s)"
+      );
+
       if (faces.length > 0) {
-        console.timeLog(
-          "request: " + requestId,
-          "Detect " + faces.length + " face(s)"
-        );
+
         for (var i in faces) {
           const faceId = faces[i].faceId;
 
@@ -187,11 +189,7 @@ app.post("/face/detect", (req, res) => {
               }
             })
             .catch(err => {
-              console.error(err);
-              res.status(400).send({
-                success: "false",
-                message: err.message
-              });
+              console.error(err);      
             });
         }
       }
@@ -201,10 +199,6 @@ app.post("/face/detect", (req, res) => {
     .catch(err => {
       console.error(err);
       console.timeEnd("request: " + requestId);
-      res.status(400).send({
-        success: "false",
-        message: err.message
-      });
     });
 });
 
