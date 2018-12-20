@@ -151,7 +151,7 @@ app.post("/face/detect", (req, res) => {
 
                 body = {
                   source: "Tlv Conf",
-                  destination: ["+972543307026"],
+                  destination: ["+972543307026", "+97254659237"],
                   text: `${
                     foundJson.name
                   } שלום, הנה כרטיס הכניסה שלך לכנס אגף המיחשוב 2018: ${
