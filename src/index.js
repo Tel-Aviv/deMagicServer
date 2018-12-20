@@ -133,12 +133,20 @@ app.post("/face/detect", (req, res) => {
 
             })
           .then(foundJson => {
-              
-            if (foundJson && !foundJson.sent) {
+            if (foundJson) {
                 console.timeLog(
                   "request: " + requestId,
                   "Found user: " + foundJson.tid
                 );
+
+                if( foundJson.sent ) {
+                  console.timeLog(
+                    "request: " + requestId,
+                    `SMS is already sent to ${foundJson.phoneNumber}`
+                  );
+                  return;  
+                }
+
                 body = {
                   source: "Tlv Conf",
                   destination: ["+972543307026"],
