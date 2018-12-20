@@ -46,7 +46,7 @@ app.post("/test", (req, res) => {
   let body = {
     source: "Tlv Conf",
     destination: ["+972543307026"],
-    text: `${casual.word} `
+    text: `${  casual.first_name } שלום: https://bit.ly/2LuXdMt` // up to 63 characters
   };
   fetch(config.actionerUrl, {
     method: "POST",
@@ -165,13 +165,10 @@ app.post("/face/detect", (req, res) => {
                 }
 
                 body = {
-                  source: "Tlv Conf",
-                  destination: ["+972546592374"],
-                  text: `${
-                    foundJson.name
-                  } שלום, הנה כרטיס הכניסה שלך לכנס אגף המחשוב 2018: ${
-                    config.ticketUrl
-                  }${foundJson.id}&sid=${casual.letter}`
+                  source: "TLV",
+                  destination: ["+972543307026"],
+                  text: `${ foundJson.name } שלום: https://bit.ly/2LuXdMt` 
+
                 };
 
                 fetch(config.actionerUrl, {
