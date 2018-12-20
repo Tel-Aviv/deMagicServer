@@ -41,11 +41,25 @@ fetch(
 // express rest api
 const app = express();
 
-app.get("/", (req, res) => {
-  res.status(200).send({
-    success: "true",
-    message: "success"
-  });
+app.post("/test", (req, res) => {
+  let  body = {
+    source: "Tlv Conf",
+    destination: ["+972546592374"],
+    text: `2018: `
+  };
+  fetch(config.actionerUrl, {
+    method: "POST",
+    //agent: new proxyAgent(config.proxyUrl),
+    headers: {
+      //   'Ocp-Apim-Subscription-Key': config.smsSubKey,
+      Authorization:
+        "Basic OTkyZDU1MjgtOGM3Zi00ODBmLThjNzktZWFjYmY3YTJhZTMyOjAyYWFlMTllLWFmYzQtNDNhMi1hZDY1LTFkMWI0NjBiOGIwMQ==",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  }).then((resp)=>{
+    res.send(200, resp);
+  })
 });
 
 app.post("/face/detect", (req, res) => {
@@ -151,7 +165,7 @@ app.post("/face/detect", (req, res) => {
 
                 body = {
                   source: "Tlv Conf",
-                  destination: ["+972543307026", "+972546592374"],
+                  destination: ["+972546592374"],
                   text: `${
                     foundJson.name
                   } שלום, הנה כרטיס הכניסה שלך לכנס אגף המיחשוב 2018: ${
@@ -175,7 +189,7 @@ app.post("/face/detect", (req, res) => {
                       return item.id == foundJson.id;
                     });
                     if (found) {
-                      found.sent = true;
+                      //found.sent = true;
                       console.timeLog(
                         "request: " + requestId,
                         "sms sent to: " + foundJson.phoneNumber
