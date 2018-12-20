@@ -55,9 +55,9 @@ app.post("/face/detect", (req, res) => {
       message: "no access key was supplied"
     });
   }
-  let requsetId = ++counter;
-  console.time("request: " + requsetId);
-  console.timeLog("request: " + requsetId, "request recived");
+  let requestId = ++counter;
+  console.time("request: " + requestId);
+  console.timeLog("request: " + requestId, "request received");
 
   fetch(`${baseUrl}detect?returnFaceId=true&returnFaceLandmarks=false`, {
     method: "POST",
@@ -72,11 +72,15 @@ app.post("/face/detect", (req, res) => {
     .then(faces => {
       if (faces.length > 0) {
         console.timeLog(
-          "request: " + requsetId,
-          "Detect " + faces.length + " faces"
+          "request: " + requestId,
+          "Detect " + faces.length + " face(s)"
         );
         for (var i in faces) {
           const faceId = faces[i].faceId;
+
+          console.timeLog(
+            "request: " + requestId,
+            `Trying similariry for ${faceId}`);
 
           body = {
             faceId: faceId,
@@ -94,24 +98,36 @@ app.post("/face/detect", (req, res) => {
             },
             body: JSON.stringify(body)
           })
-            .then(resp => resp.json())
-            .then(json => {
-              if (json && json.length > 0) {
-                if (json[0].confidence > config.confidence) {
+          .then(resp => resp.json())
+          .then(json => {
+
+            console.timeLog(
+              "request: " + requestId,
+              `Returned from similarity with ${json.length} items`);
+
+              if (json && json.length > 0 
+                  && (json[0].confidence > config.confidence) ) {
+                  
                   console.timeLog(
-                    "request: " + requsetId,
-                    "Found simlar face in " + json[0].confidence + " confidence"
+                    "request: " + requestId,
+                    "Found similar face with " + json[0].confidence + " confidence"
                   );
+
                   return listItems.find(item => {
                     return item.id == json[0].persistedFaceId;
+
                   });
-                }
+              } else {
+                return null;
               }
+
+
             })
-            .then(foundJson => {
-              if (foundJson && !foundJson.sent) {
+          .then(foundJson => {
+              
+            if (foundJson && !foundJson.sent) {
                 console.timeLog(
-                  "request: " + requsetId,
+                  "request: " + requestId,
                   "Found user: " + foundJson.tid
                 );
                 body = {
@@ -142,11 +158,11 @@ app.post("/face/detect", (req, res) => {
                     if (found) {
                       found.sent = true;
                       console.timeLog(
-                        "request: " + requsetId,
+                        "request: " + requestId,
                         "sms sent to: " + foundJson.phoneNumber
                       );
                     }
-                    console.timeEnd("request: " + requsetId);
+                    console.timeEnd("request: " + requestId);
                   })
                   .catch(err => {
                     console.error(err);
@@ -167,7 +183,7 @@ app.post("/face/detect", (req, res) => {
     })
     .catch(err => {
       console.error(err);
-      console.timeEnd("request: " + requsetId);
+      console.timeEnd("request: " + requestId);
       res.status(400).send({
         success: "false",
         message: err.message
