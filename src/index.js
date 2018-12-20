@@ -2,6 +2,7 @@ var fetch = require("node-fetch");
 var express = require("express");
 var proxyAgent = require("https-proxy-agent");
 var config = require("./../config.json");
+var casual = require('casual');
 
 const baseUrl = config.congnitiveUrl;
 const listItems = [];
@@ -41,15 +42,16 @@ fetch(
 // express rest api
 const app = express();
 
+
 app.post("/test", (req, res) => {
   let  body = {
     source: "Tlv Conf",
-    destination: ["+972546592374"],
-    text: `2018: `
+    destination: ["+972543307026"],
+    text: `${casual.word} `
   };
   fetch(config.actionerUrl, {
     method: "POST",
-    //agent: new proxyAgent(config.proxyUrl),
+    agent: new proxyAgent(config.proxyUrl),
     headers: {
       //   'Ocp-Apim-Subscription-Key': config.smsSubKey,
       Authorization:
@@ -166,11 +168,7 @@ app.post("/face/detect", (req, res) => {
                 body = {
                   source: "Tlv Conf",
                   destination: ["+972546592374"],
-                  text: `${
-                    foundJson.name
-                  } שלום, הנה כרטיס הכניסה שלך לכנס אגף המיחשוב 2018: ${
-                    config.ticketUrl
-                  }${foundJson.id}`
+                  text: `${foundJson.name } שלום, הנה כרטיס הכניסה שלך לכנס אגף המחשוב 2018: ${config.ticketUrl}${foundJson.id}&sid=${casual.letter}`
                 };
 
                 fetch(config.actionerUrl, {
