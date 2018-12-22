@@ -139,12 +139,14 @@ app.post("/face/detect", (req, res) => {
                     "request: " + requestId,
                     `Found with low confidence: ${json[0].confidence}`
                   );
+                  return null;
                 }
               } else {
                 console.timeLog(
                   "request: " + requestId,
                   `Similar face not found`
                 );
+                return null;
               }
             })
             .then(foundJson => {
@@ -178,7 +180,11 @@ app.post("/face/detect", (req, res) => {
                 })
               } 
             })
-            .then(response => response.json())
+            .then(response => {
+                if (response) {
+                  return response.json();
+                }
+              })
             .then(shortUrlJson => {
               if (shortUrlJson) {
                 body = {
