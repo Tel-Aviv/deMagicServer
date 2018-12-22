@@ -11,7 +11,7 @@ let counter = 0;
 //get all face list and save it locally
 fetch(
   `${baseUrl}largefacelists/${
-    config.largeFaceListId
+  config.largeFaceListId
   }/persistedfaces?start=0&top=1000`,
   {
     method: "GET",
@@ -46,7 +46,7 @@ app.post("/test", (req, res) => {
   let body = {
     source: "Tlv Conf",
     destination: ["+972543307026"],
-    text: `${  casual.first_name } שלום: https://bit.ly/2LuXdMt` // up to 63 characters
+    text: `${casual.first_name} שלום: https://bit.ly/2LuXdMt` // up to 63 characters
   };
   fetch(config.actionerUrl, {
     method: "POST",
@@ -127,8 +127,8 @@ app.post("/face/detect", (req, res) => {
                   console.timeLog(
                     "request: " + requestId,
                     "Found similar face with " +
-                      json[0].confidence +
-                      " confidence"
+                    json[0].confidence +
+                    " confidence"
                   );
 
                   return listItems.find(item => {
@@ -164,11 +164,29 @@ app.post("/face/detect", (req, res) => {
                   return;
                 }
 
+                let shortnerBudy = {
+                  longDynamicLink: `https://demagic.page.link?link=${config.ticketUrl}${foundJson.id}`,
+                  suffix: {
+                    option: "SHORT"
+                  }
+                }
+                return fetch("https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=AIzaSyB8Ubt-p_d0QvWZe4XzM7a4RMqoZlDvvY0", {
+                  method: "POST",
+                  //agent: new proxyAgent(config.proxyUrl),
+                  headers: {
+                    "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify(shortnerBudy)
+                })
+              }
+            })
+            .then(response => response.json())
+            .then(shortUrlJson => {
+              if (shortUrlJson) {
                 body = {
                   source: "TLV",
-                  destination: ["+972543307026"],
-                  text: `${ foundJson.name } שלום: https://bit.ly/2LuXdMt` 
-
+                  destination: ["+972546592374"],
+                  text: `${foundJson.name} שלום: ${shortUrlJson.shortLink}`
                 };
 
                 fetch(config.actionerUrl, {
@@ -177,27 +195,24 @@ app.post("/face/detect", (req, res) => {
                   headers: {
                     //   'Ocp-Apim-Subscription-Key': config.smsSubKey,
                     Authorization: "Basic OTkyZDU1MjgtOGM3Zi00ODBmLThjNzktZWFjYmY3YTJhZTMyOjAyYWFlMTllLWFmYzQtNDNhMi1hZDY1LTFkMWI0NjBiOGIwMQ==",
-                      "Content-Type": "application/json"
+                    "Content-Type": "application/json"
                   },
                   body: JSON.stringify(body)
                 })
-                  .then(resp => {
-                    const found = listItems.find(item => {
-                      return item.id == foundJson.id;
-                    });
-                    if (found) {
-                      //found.sent = true;
-                      console.timeLog(
-                        "request: " + requestId,
-                        "sms sent to: " + foundJson.phoneNumber
-                      );
-                    }
-                    console.timeEnd("request: " + requestId);
-                  })
-                  .catch(err => {
-                    console.error(err);
-                  });
               }
+            })
+            .then(resp => {
+              const found = listItems.find(item => {
+                return item.id == foundJson.id;
+              });
+              if (found) {
+                //found.sent = true;
+                console.timeLog(
+                  "request: " + requestId,
+                  "sms sent to: " + foundJson.phoneNumber
+                );
+              }
+              console.timeEnd("request: " + requestId);
             })
             .catch(err => {
               console.error(err);
