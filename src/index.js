@@ -186,7 +186,9 @@ app.post("/face/detect", (req, res) => {
                     body = {
                       source: "TLV",
                       destination: ["+972546592374"],
-                      text: `${foundJson.name} שלום: ${shortUrlJson.shortLink}`
+                      text: `שלום ${foundJson.name}, שמחנו לראותך.
+                      ${shortUrlJson.shortLink}
+                      `
                     };
 
                     fetch(config.actionerUrl, {
