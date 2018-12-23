@@ -185,10 +185,10 @@ app.post("/face/detect", (req, res) => {
                   if (shortUrlJson) {
                     body = {
                       source: "TLV",
+                      // TBD: Uncomment this line!!!
+                      /*[foundJson.phoneNumber], */
                       destination: ["+972546592374"],
-                      text: `שלום ${foundJson.name}, שמחנו לראותך.
-                      ${shortUrlJson.shortLink}
-                      `
+                      text: `בוקר טוב ${foundJson.name}, ${shortUrlJson.shortLink}`
                     };
 
                     fetch(config.actionerUrl, {
@@ -206,7 +206,8 @@ app.post("/face/detect", (req, res) => {
                       return item.id == foundJson.id;
                     });
                     if (found) {
-                      //found.sent = true;
+                      // TBD: Uncomment this line!!! 
+                      //found.sent = true;    
                       console.timeLog(
                         "request: " + requestId,
                         "sms sent to: " + foundJson.phoneNumber
