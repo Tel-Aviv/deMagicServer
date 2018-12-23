@@ -190,7 +190,7 @@ app.post("/face/detect", (req, res) => {
 
                     body = {
                       source: "TLV",
-                      destination: _phoneNumber,
+                      destination: [_phoneNumber],
                       text: `בוקר טוב ${foundJson.name}, ${shortUrlJson.shortLink}`
                     };
 
