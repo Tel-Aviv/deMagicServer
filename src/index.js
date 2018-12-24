@@ -185,7 +185,7 @@ app.post("/face/detect", (req, res) => {
                   if (shortUrlJson) {
 
                     // TBD: Uncomment this line!!!
-                    let _phoneNumber = "0546592374"; // foundJson.phoneNumber
+                    let _phoneNumber =  foundJson.phoneNumber;
                     _phoneNumber = _phoneNumber.replace(/^0+/, '+972');
 
                     body = {
@@ -210,7 +210,7 @@ app.post("/face/detect", (req, res) => {
                     });
                     if (found) {
                       // TBD: Uncomment this line!!! 
-                      //found.sent = true;    
+                      found.sent = true;    
                       console.timeLog(
                         "request: " + requestId,
                         "sms sent to: " + _phoneNumber
