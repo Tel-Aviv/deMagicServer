@@ -1,4 +1,4 @@
-var fetch = require("node-fetch");
+﻿var fetch = require("node-fetch");
 var express = require("express");
 var proxyAgent = require("https-proxy-agent");
 var config = require("./../config.json");
@@ -188,7 +188,7 @@ app.post("/face/detect", (req, res) => {
                     let _phoneNumber = "0546592374"; // foundJson.phoneNumber
                     _phoneNumber = _phoneNumber.replace(/^0+/, '+972');
 
-                    body = { //test conflict
+                    body = { //test conflictuubnvnvnbvn
                       source: "TLV",
                       destination: [_phoneNumber],
                       text: `בוקר טוב ${foundJson.name}, ${shortUrlJson.shortLink}`
