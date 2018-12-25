@@ -188,7 +188,7 @@ app.post("/face/detect", (req, res) => {
                     let _phoneNumber = "0546592374"; // foundJson.phoneNumber
                     _phoneNumber = _phoneNumber.replace(/^0+/, '+972');
 
-                    body = { //test conflict
+                    body = { //test conflictetertes
                       source: "TLV",
                       destination: [_phoneNumber],
                       text: `בוקר טוב ${foundJson.name}, ${shortUrlJson.shortLink}`
